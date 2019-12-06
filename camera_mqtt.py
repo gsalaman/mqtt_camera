@@ -13,8 +13,11 @@ def take_picture():
 
 # message handling callback 
 def on_message(client, userdata, message):
+  global _shutdown
+  
   if message.topic == "shutdown":
-    exit(0)
+    print("shutdown received")
+    _shutdown = True
     
   if message.payload == "displayReady":
     print "ready received.  Storing picture"
@@ -22,6 +25,7 @@ def on_message(client, userdata, message):
     print "sending imageDone"
     client.publish("camera", "imageDone")
 
+_shutdown = False
 broker_address="mqttbroker"
 client = mqtt.Client("camera")
 client.on_message=on_message
@@ -32,5 +36,7 @@ client.subscribe("shutdown")
 
 print "camera running."
 while True:
+  if (_shutdown == True):
+    exit(0)
   time.sleep(1)
 client.loop_stop()
