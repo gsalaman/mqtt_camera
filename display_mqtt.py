@@ -8,12 +8,12 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageDraw
 
 # this is the size of ONE of our matrixes. 
-matrix_rows = 64 
-matrix_columns = 64 
+matrix_rows = 32 
+matrix_columns = 32 
 
 # how many matrixes stacked horizontally and vertically 
-matrix_horizontal = 1 
-matrix_vertical = 1
+matrix_horizontal = 5 
+matrix_vertical = 3
 
 total_rows = matrix_rows * matrix_vertical
 total_columns = matrix_columns * matrix_horizontal
@@ -44,8 +44,8 @@ def on_message(client, userdata, message):
     print "sending displayReady"
     client.publish("camera", "displayReady")
 
-broker_address="10.0.0.17"
-client = mqtt.Client("camera")
+broker_address="makerlabPi1"
+client = mqtt.Client("display_app")
 client.on_message=on_message
 client.connect(broker_address)
 client.loop_start()

@@ -3,9 +3,10 @@
 
 import paho.mqtt.client as mqtt
 from picamera import PiCamera
+import time
 
 camera = PiCamera()
-camera.resolution = (64,64)
+camera.resolution = (256,256)
 
 def take_picture():
   global camera
@@ -13,13 +14,14 @@ def take_picture():
 
 # message handling callback 
 def on_message(client, userdata, message):
+  print "Callback!"
   if message.payload == "displayReady":
     print "ready received.  Storing picture"
     take_picture()
     print "sending imageDone"
     client.publish("camera", "imageDone")
 
-broker_address="10.0.0.17"
+broker_address="makerlabPi1"
 client = mqtt.Client("camera")
 client.on_message=on_message
 client.connect(broker_address)
