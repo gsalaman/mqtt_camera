@@ -3,6 +3,8 @@
 
 import paho.mqtt.client as mqtt
 from picamera import PiCamera
+import time
+
 
 camera = PiCamera()
 camera.resolution = (160,96)

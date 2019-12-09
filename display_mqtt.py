@@ -28,6 +28,9 @@ options.gpio_slowdown = 2
 
 matrix = RGBMatrix(options = options)
 
+_shutdown = False
+_saw_camera = False
+
 def display_jpg():
   global matrix
 
@@ -39,8 +42,10 @@ def display_jpg():
 # message handling callback 
 def on_message(client, userdata, message):
   global _shutdown
+  global _saw_camera
   
   if message.payload == "imageDone":
+    _saw_camera = True
     print "imageDone received.  Displaying picture"
     display_jpg()
     print "sending displayReady"
@@ -51,15 +56,18 @@ def on_message(client, userdata, message):
     
 # MAIN CODE
 broker_address="mqttbroker"
-client = mqtt.Client("camera")
+client = mqtt.Client("camera_display")
 client.on_message=on_message
 client.connect(broker_address)
 client.loop_start()
 client.subscribe("camera")
 client.subscribe("shutdown")
 print "display running."
-print "sending displayReady"
-client.publish("camera", "displayReady")
+
+while (_saw_camera == False):
+  print "sending displayReady"
+  client.publish("camera", "displayReady")
+  sleep(1)
 
 try:
   print("Press CTRL-C to stop")
